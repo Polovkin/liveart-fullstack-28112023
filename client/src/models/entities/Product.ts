@@ -6,6 +6,7 @@ export class Product implements Entity {
   public categoryId = '';
   public description = '';
   public previewImage = '';
+  public isHidden = false;
 
   constructor(initData: Partial<Product>) {
     Object.assign(this, initData);

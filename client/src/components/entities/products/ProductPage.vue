@@ -34,6 +34,18 @@
             />
           </v-col>
           <v-col cols="12">
+            <v-select
+                v-model="state.entity.isHidden"
+                label="Is Hidden"
+                variant="outlined"
+                hide-details="auto"
+                :items="isHiddenValues"
+                item-title="name"
+                item-value="id"
+                data-test="product-isHidden"
+            />
+          </v-col>
+          <v-col cols="12">
             <v-text-field
                 v-model="state.entity.description"
                 label="Description"
@@ -160,6 +172,10 @@ const Component = defineComponent({
       isNew,
       listCategory,
       imageValidationRules,
+      isHiddenValues: [
+        {id: true, name: 'Yes'},
+        {id: false, name: 'No'},
+      ],
     };
   },
 });

@@ -50,6 +50,9 @@ export class ProductService implements ProductServiceInterface {
             const oldProduct = await this.productRepository.findById(id);
             const oldProductImage = oldProduct?.previewImage;
 
+            if (productImage === oldProductImage) {
+                return await this.productRepository.replaceById(id, product);
+            }
             if (oldProductImage) {
                 await this.fileService.deleteFile(oldProductImage);
             }

@@ -92,6 +92,12 @@
             <slot> {{ item.columns.totalPrice }}$ </slot>
           </template>
 
+          <template #[`item.isHidden`]="{ item }">
+            <slot>
+              <HiddenIcon v-if="item.columns.isHidden" />
+            </slot>
+          </template>
+
           <template #[`item.actions`]="{ item }">
             <v-btn icon elevation="0" @click="showDialog(item.raw)">
               <v-icon> mdi-pencil-box-outline </v-icon>
@@ -126,6 +132,7 @@ import Pagination from './Pagination.vue';
 import { VDataTableServer } from 'vuetify/labs/components';
 import Entity from '@/models/entities/Entity';
 import {BASE_IMAGE_URL} from "../../constants";
+import HiddenIcon from "@/components/common/HiddenIcon.vue";
 
 interface TableOptions {
   itemsPerPage: number;
@@ -147,6 +154,7 @@ const Component = defineComponent({
   name: 'EntityTable',
 
   components: {
+    HiddenIcon,
     VDataTableServer,
     TableHeader,
     Pagination,
