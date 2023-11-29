@@ -1,0 +1,197 @@
+<template>
+  <v-dialog v-model="dialogVisible" persistent scrollable max-width="500">
+    <v-card v-if="loading" data-test="dialog-preloader">
+      <v-skeleton-loader type="article" />
+      <v-skeleton-loader type="actions" />
+    </v-card>
+
+    <v-card v-else data-test="dialog-card">
+      <!-- Dialog title -->
+      <v-card-title
+        class="headline pl-5 pr-3 d-flex justify-space-between"
+        data-test="dialog-title"
+      >
+        <span>{{ title }}</span>
+        <v-btn icon elevation="0" @click="close">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-card-title>
+
+      <v-divider />
+
+      <!-- Dialog content -->
+      <v-form v-model="valid">
+        <v-card-text>
+          <v-container fluid class="pa-0">
+            <!-- Form content (input fields, etc) goes here -->
+            <slot name="form-content" />
+          </v-container>
+        </v-card-text>
+
+        <v-divider />
+
+        <v-card-actions tile class="pa-3">
+          <!-- DELETE -->
+          <!-- show tooltip is there are delete warning messages -->
+          <v-tooltip v-if="isDeletable && deleteRules && deleteRules.length > 0" right>
+            <template #activator="{ props }">
+              <span v-bind="props">
+                <v-btn
+                  color="error"
+                  variant="text"
+                  disabled
+                  data-test="dialog-btn-del-by-tooltip"
+                >
+                  Delete
+                </v-btn>
+              </span>
+            </template>
+            <div v-for="(rule, i) in deleteRules" :key="i">
+              {{ rule }}
+            </div>
+          </v-tooltip>
+          <!-- if no warning messages - ask for confirmation before delete -->
+          <Confirmation
+            v-else-if="isDeletable"
+            :confirm-message="`Are you sure you want to delete ${title}?`"
+            @confirmed="deleteItem($event)"
+          >
+            <template #activator-btn="{ on }">
+              <v-btn
+                color="error"
+                variant="text"
+                :disabled="loading"
+                v-bind="on"
+                data-test="dialog-btn-del-by-conf"
+              >
+                Delete
+              </v-btn>
+            </template>
+          </Confirmation>
+
+          <v-spacer />
+
+          <!-- CANCEL -->
+          <v-btn
+            color="gray"
+            variant="text"
+            :disabled="loading"
+            data-test="dialog-btn-cancel"
+            @click="close()"
+          >
+            Cancel
+          </v-btn>
+
+          <!-- SAVE / CREATE -->
+          <v-btn
+            v-if="!isNew"
+            color="success"
+            :disabled="!valid || loading"
+            variant="text"
+            data-test="dialog-btn-save"
+            @click="save()"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            v-if="isNew"
+            color="success"
+            :disabled="!valid || loading"
+            variant="text"
+            data-test="dialog-btn-create"
+            @click="create()"
+          >
+            Create
+          </v-btn>
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, ref } from "vue";
+import Confirmation from "@/components/utils/Confirmation.vue";
+import { EntityType } from "../../store/entityModules/types";
+import { getNounPluralForm } from "../../utils/formatting";
+import { getEntityStorePath } from "../../store/entityModules/utils";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import { PropType } from "vue";
+import { VSkeletonLoader } from "vuetify/labs/components";
+
+const Component = defineComponent({
+  name: "EntityDialog",
+
+  components: {
+    Confirmation,
+    VSkeletonLoader,
+  },
+
+  props: {
+    item: {
+      type: Object,
+      default: () => ({}),
+    },
+    title: {
+      type: String,
+      default: "",
+    },
+    entityType: {
+      type: String as PropType<EntityType>,
+      default: "",
+    },
+    loading: Boolean,
+    isNew: Boolean,
+    isDeletable: Boolean,
+    deleteRules: {
+      type: Array,
+      default: () => [],
+    },
+  },
+
+  setup(props) {
+    const dialogVisible = true;
+    const store = useStore();
+    const router = useRouter();
+    const valid = ref(true);
+    const storePath = computed(() => getEntityStorePath(props.entityType));
+
+    function create() {
+      store.dispatch(`${storePath.value}/addItem`, props.item);
+      close();
+    }
+
+    function save() {
+      store.dispatch(`${storePath.value}/updateItem`, props.item);
+      close();
+    }
+
+    function deleteItem(confirmed: boolean) {
+      if (!confirmed) return;
+
+      if (props.item) {
+        const id = props.item.id;
+        store.dispatch(`${storePath.value}/deleteItem`, id);
+        close();
+      }
+    }
+
+    function close() {
+      const entityPath = getNounPluralForm(props.entityType);
+      router.push(`/${entityPath}`);
+    }
+
+    return {
+      valid,
+      deleteItem,
+      close,
+      save,
+      create,
+      dialogVisible,
+    };
+  },
+});
+
+export default Component;
+</script>

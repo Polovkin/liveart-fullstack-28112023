@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  cpcaa:
+    image: registry.gitlab.com/liveartdevteam/sandbox/trx0/admin-spa:${VERSION}
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        - VERSION

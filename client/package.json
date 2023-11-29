@@ -1,0 +1,50 @@
+{
+  "name": "admin-spa-boilerplate",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore --fix src",
+    "lint:md": "npx doctoc README.md ./docs ./docker && prettier --write README.md ./docs ./docker/*.md",
+    "format": "prettier . --write"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.2.96",
+    "axios": "^1.4.0",
+    "en-inflectors": "^1.0.12",
+    "roboto-fontface": "^0.10.0",
+    "secure-ls": "^1.2.6",
+    "vite-plugin-vuetify": "^1.0.2",
+    "vue": "^3.2.47",
+    "vue-router": "^4.0.13",
+    "vuetify": "^3.3.5",
+    "vuex": "^4.1.0",
+    "vuex-persistedstate": "^4.1.0",
+    "webfontloader": "^1.6.28"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.195",
+    "@types/node": "^20.3.2",
+    "@types/vue-router": "^2.0.0",
+    "@types/webfontloader": "^1.6.35",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-vue": "^4.1.0",
+    "eslint": "^8.44.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-vue": "^9.15.1",
+    "git-revision-webpack-plugin": "^5.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9",
+    "vite-plugin-env": "^1.0.1",
+    "vue-tsc": "^1.4.2"
+  }
+}
