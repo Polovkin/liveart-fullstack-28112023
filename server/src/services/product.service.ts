@@ -1,5 +1,5 @@
-import {BindingScope, inject, injectable, service} from '@loopback/core';
-import {Filter, repository} from "@loopback/repository";
+import {BindingScope, injectable, service} from '@loopback/core';
+import {repository} from "@loopback/repository";
 import {ProductRepository} from "../repositories";
 import {Product} from "../models";
 import {FilesService, FilesServiceInterface} from "./files.service";
@@ -15,7 +15,6 @@ export class ProductService implements ProductServiceInterface {
     constructor(
         @service(FilesService)
         public fileService: FilesServiceInterface,
-
         @repository(ProductRepository)
         public productRepository: ProductRepository) {
     }
@@ -38,7 +37,14 @@ export class ProductService implements ProductServiceInterface {
         const productImage = product?.previewImage;
 
         if (productImage) {
-          const filename = await this.fileService.uploadFile(productImage);
+            const oldProduct = await this.productRepository.findById(id);
+            const oldProductImage = oldProduct?.previewImage;
+
+            if (oldProductImage) {
+                await this.fileService.deleteFile(oldProductImage);
+            }
+
+            const filename = await this.fileService.uploadFile(productImage);
             return await this.productRepository.replaceById(id, {
                 ...product,
                 previewImage: filename,

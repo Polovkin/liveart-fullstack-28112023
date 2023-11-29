@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 export interface FilesServiceInterface {
     uploadFile(fileBase64: string): Promise<string>
 
+    deleteFile(fileName: string): Promise<void>
     readFile(fileName: string): Promise<string>
 }
 
@@ -26,6 +27,20 @@ export class FilesService implements FilesServiceInterface {
                     reject(err);
                 } else {
                     resolve(data);
+                }
+            });
+        });
+    }
+
+    deleteFile(fileName: string): Promise<void> {
+        const filePath = path.join(this.uploadsFolder, fileName);
+
+        return new Promise((resolve, reject) => {
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
                 }
             });
         });

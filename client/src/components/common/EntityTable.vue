@@ -1,7 +1,6 @@
 <template>
   <v-container fluid class="py-2">
     <router-view name="editDialog" />
-
     <v-row>
       <v-col>
         <v-data-table-server
@@ -39,11 +38,11 @@
           </template>
 
           <template #[`item.previewImage`]="{ item }">
-            <img
-              :src="item.columns.previewImage"
+            <v-img v-if="item.columns.previewImage"
+              :src="BASE_IMAGE_URL +item.columns.previewImage"
               :alt="item.columns.previewImage"
-              width="50"
-              height="50"
+              width="100"
+              height="100"
             />
           </template>
 
@@ -126,6 +125,7 @@ import TableHeader from './TableHeader.vue';
 import Pagination from './Pagination.vue';
 import { VDataTableServer } from 'vuetify/labs/components';
 import Entity from '@/models/entities/Entity';
+import {BASE_IMAGE_URL} from "../../constants";
 
 interface TableOptions {
   itemsPerPage: number;
@@ -154,7 +154,7 @@ const Component = defineComponent({
 
   props: {
     headers: {
-      type: Array<ITableHeader>,
+      type: Array as PropType<ITableHeader[]>,
       default: () => [],
     },
     entityType: {
@@ -167,7 +167,7 @@ const Component = defineComponent({
     const store: Store<RootState> = useStore();
     const storePath = getEntityStorePath(props.entityType);
     const router = useRouter();
-
+    console.log(props.headers);
     onMounted(() => {
       const searchHeaders = searchableHeaders(props.headers);
       if (searchHeaders.length > 0)
@@ -227,6 +227,7 @@ const Component = defineComponent({
     }
 
     return {
+      BASE_IMAGE_URL,
       state,
       showDialog,
       storePath,

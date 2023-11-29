@@ -21,6 +21,15 @@
     </v-card-title>
 
     <v-divider />
+    <v-card-item>
+      <v-img
+          v-if="item?.previewImage"
+          :src="BASE_IMAGE_URL+item?.previewImage"
+          :alt="item?.previewImage"
+          width="100%"
+          height="300px"
+          data-test="dialog-img"/>
+    </v-card-item>
 
     <v-form v-model="valid">
       <v-card-text>
@@ -120,6 +129,7 @@ import { getEntityStorePath } from "../../store/entityModules/utils";
 import { getNounPluralForm } from "../../utils/formatting";
 import Confirmation from "../utils/Confirmation.vue";
 import { VSkeletonLoader } from "vuetify/labs/components";
+import {BASE_IMAGE_URL} from "../../constants";
 const Component = defineComponent({
   name: "EntityDialog",
 
@@ -186,6 +196,7 @@ const Component = defineComponent({
       save,
       create,
       dialogVisible,
+      BASE_IMAGE_URL
     };
   },
 });
