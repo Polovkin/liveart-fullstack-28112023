@@ -5,4 +5,5 @@ export interface ProductDTO {
   categoryId?: string;
   description?: string;
   category?: CategoryDTO;
+  previewImage?: string;
 }

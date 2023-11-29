@@ -1,7 +1,7 @@
 export default class Configuration {
 	static get CONFIG(): Record<string, string> {
 		return {
-			VITE_VUE_APP_API_URL: '$VITE_VUE_APP_API_URL',
+			VITE_VUE_APP_API_URL: 'http://127.0.0.1:3030',
 		};
 	}
 
