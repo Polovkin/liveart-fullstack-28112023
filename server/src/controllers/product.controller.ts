@@ -19,11 +19,16 @@ import {
 } from '@loopback/rest';
 import {Product} from '../models';
 import {ProductRepository} from '../repositories';
+import {ProductServiceInterface} from "../services";
+import {inject} from "@loopback/core";
 
 export class ProductController {
   constructor(
     @repository(ProductRepository)
     public productRepository : ProductRepository,
+
+    @inject('services.ProductService')
+    public productService: ProductServiceInterface,
   ) {}
 
   @post('/products')
@@ -137,7 +142,7 @@ export class ProductController {
     @param.path.string('id') id: string,
     @requestBody() product: Product,
   ): Promise<void> {
-    await this.productRepository.replaceById(id, product);
+    await this.productService.updateProduct(id, product);
   }
 
   @del('/products/{id}')
