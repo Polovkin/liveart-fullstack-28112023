@@ -30,6 +30,12 @@ export class Product extends Entity {
   })
   previewImage?: string;
 
+  @property({
+    type: 'boolean',
+    default: false,
+  })
+  isHidden: false;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data

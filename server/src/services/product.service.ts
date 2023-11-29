@@ -8,6 +8,8 @@ export interface ProductServiceInterface {
     updateProduct(id: string, product: Product): Promise<void>;
 
     createProduct(product: Omit<Product, 'id'>): Promise<Product>;
+
+    getAvaliableProducts(): Promise<Product[]>;
 }
 
 @injectable({scope: BindingScope.TRANSIENT})
@@ -17,6 +19,14 @@ export class ProductService implements ProductServiceInterface {
         public fileService: FilesServiceInterface,
         @repository(ProductRepository)
         public productRepository: ProductRepository) {
+    }
+
+    async getAvaliableProducts(): Promise<Product[]> {
+        return await this.productRepository.find({
+            where: {
+                isHidden: false,
+            }
+        });
     }
 
     async createProduct(product: Product) {

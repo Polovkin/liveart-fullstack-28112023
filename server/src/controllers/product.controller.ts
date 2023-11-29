@@ -63,6 +63,15 @@ export class ProductController {
     return this.productRepository.count(where);
   }
 
+  @get('/products/avaliable')
+  @response(200, {
+    description: 'Product model count',
+    content: {'application/json': {schema: CountSchema}},
+  })
+  async avaliable(): Promise<Product[]> {
+    return this.productService.getAvaliableProducts();
+  }
+
   @get('/products')
   @response(200, {
     description: 'Array of Product model instances',
@@ -75,6 +84,7 @@ export class ProductController {
       },
     },
   })
+
   async find(
     @param.filter(Product) filter?: Filter<Product>,
   ): Promise<Product[]> {
