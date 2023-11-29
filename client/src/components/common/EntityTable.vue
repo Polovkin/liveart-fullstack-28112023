@@ -175,7 +175,7 @@ const Component = defineComponent({
     const store: Store<RootState> = useStore();
     const storePath = getEntityStorePath(props.entityType);
     const router = useRouter();
-    console.log(props.headers);
+
     onMounted(() => {
       const searchHeaders = searchableHeaders(props.headers);
       if (searchHeaders.length > 0)

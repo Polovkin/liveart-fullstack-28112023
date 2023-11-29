@@ -55,6 +55,20 @@
             />
           </v-col>
           <v-col cols="12">
+            <v-select
+                v-model="state.entity.tags"
+                label="Tags"
+                variant="outlined"
+                hide-details="auto"
+                item-title="name"
+                item-value="id"
+                data-test="product-isHidden"
+                chips
+                :items="tags"
+                multiple
+            ></v-select>
+          </v-col>
+          <v-col cols="12">
             Upload image
             <v-file-input
                 @change="updateImage"
@@ -78,6 +92,7 @@ import {computed, defineComponent, onBeforeMount, reactive, ref, Ref, watch} fro
 import {useRouter} from 'vue-router';
 import {useStore} from 'vuex';
 import {Product} from '../../../models/entities/Product';
+import {Tag} from "../../../models/entities/Tag";
 
 interface State {
   entity: Product;
@@ -106,6 +121,8 @@ const Component = defineComponent({
     let listCategory: Ref<string[]> = ref([]);
 
 
+    const tags = ref<Tag[]>([]);
+
     onBeforeMount(async () => {
       if (!isNew()) {
         const res = await store.dispatch(`productsModule/fetchItem`, props.id);
@@ -113,6 +130,11 @@ const Component = defineComponent({
       }
       listCategory.value = await store.dispatch(
           'categoriesModule/fetchAllItems',
+          undefined,
+      );
+
+      tags.value = await store.dispatch(
+          'tagModule/fetchAllItems',
           undefined,
       );
     });
@@ -172,6 +194,7 @@ const Component = defineComponent({
       isNew,
       listCategory,
       imageValidationRules,
+      tags,
       isHiddenValues: [
         {id: true, name: 'Yes'},
         {id: false, name: 'No'},

@@ -1,6 +1,6 @@
 import {BindingScope, injectable, service} from '@loopback/core';
 import {repository} from "@loopback/repository";
-import {ProductRepository} from "../repositories";
+import {ProductRepository, TagRepository} from "../repositories";
 import {Product} from "../models";
 import {FilesService, FilesServiceInterface} from "./files.service";
 
@@ -17,8 +17,13 @@ export class ProductService implements ProductServiceInterface {
     constructor(
         @service(FilesService)
         public fileService: FilesServiceInterface,
+
         @repository(ProductRepository)
-        public productRepository: ProductRepository) {
+        public productRepository: ProductRepository,
+
+        @repository(TagRepository)
+        public tagRepository: TagRepository
+    ) {
     }
 
     async getAvaliableProducts(): Promise<Product[]> {
@@ -44,26 +49,42 @@ export class ProductService implements ProductServiceInterface {
     }
 
     async updateProduct(id: string, product: Product) {
+        const tagsIds = product?.tags;
         const productImage = product?.previewImage;
+        const newProduct = new Product();
+
+        newProduct.name = product.name;
+        newProduct.description = product.description;
+        newProduct.categoryId = product.categoryId;
+        newProduct.isHidden = product.isHidden;
+
+        if (tagsIds) {
+            newProduct.tags = tagsIds;
+        }
 
         if (productImage) {
-            const oldProduct = await this.productRepository.findById(id);
-            const oldProductImage = oldProduct?.previewImage;
+            const {previewImage} = await this.replaceProductImage(product);
+            newProduct.previewImage = previewImage;
+        }
 
-            if (productImage === oldProductImage) {
-                return await this.productRepository.replaceById(id, product);
-            }
+        return await this.productRepository.replaceById(id, newProduct);
+    }
+
+    private async replaceProductImage(request: Product) {
+        const productImage = request?.previewImage;
+        const oldProductImage = await this.productRepository.findById(request.id).then(product => product.previewImage);
+
+        if (productImage && productImage !== oldProductImage) {
             if (oldProductImage) {
                 await this.fileService.deleteFile(oldProductImage);
             }
-
             const filename = await this.fileService.uploadFile(productImage);
-            return await this.productRepository.replaceById(id, {
-                ...product,
+            return {
+                ...request,
                 previewImage: filename,
-            });
+            } as Product;
         }
-
-        return await this.productRepository.replaceById(id, product);
+        return request;
     }
+
 }

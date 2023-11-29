@@ -1,4 +1,5 @@
-import {Entity, belongsTo, model, property} from '@loopback/repository';
+import {Entity, belongsTo, model, property, hasMany} from '@loopback/repository';
+import {Tag} from "./tag.model";
 
 @model({settings: {strict: false}})
 export class ProductCategory extends Entity {
@@ -15,6 +16,9 @@ export class ProductCategory extends Entity {
     required: true,
   })
   name: string;
+
+  @hasMany(() => Tag)
+  tags: Tag[];
 
   @belongsTo(() => ProductCategory)
   categoryId: string;

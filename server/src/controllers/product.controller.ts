@@ -150,7 +150,7 @@ export class ProductController {
   })
   async replaceById(
     @param.path.string('id') id: string,
-    @requestBody() product: Product,
+    @requestBody() product: Product
   ): Promise<void> {
     await this.productService.updateProduct(id, product);
   }

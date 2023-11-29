@@ -8,24 +8,19 @@ import { EntityType } from '../../../store/entityModules/types';
 import EntityTable from '../../common/EntityTable.vue';
 
 const Component = defineComponent({
-  name: 'ProductTable',
+  name: 'TagTable',
 
   components: {
     EntityTable,
   },
 
   setup() {
-    const entityType = EntityType.PRODUCT;
+    const entityType = EntityType.TAG;
 
     const state = reactive({
       headers: [
-        { title: 'Name', key: 'name', sortable: true, searchable: true },
-        { title: 'Thumbnail', key: 'previewImage', sortable: false },
-        { title: 'Category ID', key: 'categoryId', sortable: true },
-        { title: 'Description', key: 'description', sortable: false },
-        { title: 'Is Hidden', key: 'isHidden', sortable: true },
-        { title: 'Tags', key: 'tags', sortable: true },
-        { title: 'Details', key: 'actions', sortable: false },
+        { title: 'Name', key: 'name', searchable: true },
+        { title: 'Details', key: 'actions', align: 'end', sortable: false },
       ],
     });
 
