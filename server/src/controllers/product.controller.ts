@@ -69,7 +69,7 @@ export class ProductController {
     content: {'application/json': {schema: CountSchema}},
   })
   async avaliable(): Promise<Product[]> {
-    return this.productService.getAvaliableProducts();
+    return this.productService.getAvailableProducts();
   }
 
   @get('/products')

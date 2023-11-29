@@ -1,7 +1,7 @@
 import {BindingScope, injectable, service} from '@loopback/core';
 import {repository} from "@loopback/repository";
 import {ProductRepository, TagRepository} from "../repositories";
-import {Product} from "../models";
+import {Product, Tag} from "../models";
 import {FilesService, FilesServiceInterface} from "./files.service";
 
 export interface ProductServiceInterface {
@@ -9,7 +9,7 @@ export interface ProductServiceInterface {
 
     createProduct(product: Omit<Product, 'id'>): Promise<Product>;
 
-    getAvaliableProducts(): Promise<Product[]>;
+    getAvailableProducts(): Promise<Product[]>
 }
 
 @injectable({scope: BindingScope.TRANSIENT})
@@ -26,11 +26,11 @@ export class ProductService implements ProductServiceInterface {
     ) {
     }
 
-    async getAvaliableProducts(): Promise<Product[]> {
+    async getAvailableProducts(): Promise<Product[]> {
         return await this.productRepository.find({
             where: {
                 isHidden: false,
-            }
+            },
         });
     }
 

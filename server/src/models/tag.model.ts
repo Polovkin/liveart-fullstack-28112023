@@ -16,7 +16,6 @@ export class Tag extends Entity {
         required: true,
     })
     name: string;
-
     // Define well-known properties here
 
     // Indexer property to allow additional data

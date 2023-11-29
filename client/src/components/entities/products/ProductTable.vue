@@ -1,11 +1,13 @@
 <template>
-  <EntityTable :entity-type="entityType" :headers="state.headers" />
+  <EntityTable :entity-type="entityType" :headers="state.headers" :product-tags="tags" />
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
-import { EntityType } from '../../../store/entityModules/types';
+import {defineComponent, onBeforeMount, reactive, ref} from 'vue';
+import {EntityType} from '../../../store/entityModules/types';
 import EntityTable from '../../common/EntityTable.vue';
+import {Tag} from "../../../models/entities/Tag";
+import {useStore} from "vuex";
 
 const Component = defineComponent({
   name: 'ProductTable',
@@ -16,7 +18,8 @@ const Component = defineComponent({
 
   setup() {
     const entityType = EntityType.PRODUCT;
-
+    const store = useStore();
+    const tags = ref<Tag[]>([]);
     const state = reactive({
       headers: [
         { title: 'Name', key: 'name', sortable: true, searchable: true },
@@ -29,7 +32,15 @@ const Component = defineComponent({
       ],
     });
 
+    onBeforeMount(async () => {
+      tags.value = await store.dispatch(
+          'tagModule/fetchAllItems',
+          undefined,
+      );
+    });
+
     return {
+      tags,
       entityType,
       state,
     };
