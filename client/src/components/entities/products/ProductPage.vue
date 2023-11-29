@@ -120,6 +120,9 @@ const Component = defineComponent({
 
     const updateImage = (event: any) => {
       const file = event.target.files[0];
+      // Prevent upload input data, if ve press cancel button
+      if (!file || !file.type.includes('image')) return;
+
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -141,7 +144,12 @@ const Component = defineComponent({
 
     const imageValidationRules = [
       value => !value || !value.length || value[0].size < 2000000 || 'Image size should be less than 2 MB!',
-      value => !value || !value.length || value[0].type === 'image/png' || value[0].type === 'image/jpeg' || 'Image should be in PNG or JPEG format!'
+      value => {
+        const file = value[0];
+        if (!file) return true;
+        const isValidType = file.type === 'image/png' || file.type === 'image/jpeg';
+        return isValidType || 'Image should be in PNG or JPEG format!'
+      }
     ];
 
     return {
